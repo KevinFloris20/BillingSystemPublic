@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCR</title>
+</head>
+<!-- add script -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+<script src="script.js"></script>
+<!-- inc css -->
+<link rel="stylesheet" href="style.css">
+<body>
+    <!-- This is the tab -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'NewBill')">NewBill</button>
+        <button class="tablinks" onclick="openTab(event, 'Search')">Search</button>
+    </div>    
+    <!-- this is the search -->
+    <div id="Search" class="tabcontent">
+    
+        <div class="advanced-search">
+            <h4>ADVANCED SEARCH:</h4>
+            <div class="form-row">
+                <label>Date From: </label>
+                <input type="date" class="form-input">
+            </div>
+            <div class="form-row">
+                <label>Date To: </label>
+                <input type="date" class="form-input">
+            </div>
+            <div class="form-row">
+                <label>ChassisID: </label>
+                <input type="text" class="form-input" placeholder="Enter Chassis ID">
+            </div>
+            <p></p>
+            <div class="buttons">
+                <button class="btn reset">RESET</button>
+                <button class="btn search-btn" onclick="displayResults()">SEARCH</button>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div id="searchResults" class="results-container"></div>
+
+    </div>
+    <!-- Bill Maker -->
+    <div id="NewBill" class="tabcontent">
+        <div style="display:flex;">
+            <!-- Regular form info -->
+            <a id="report" style="padding:5px" href="/downloadInvoice" download>
+                <p>Download Invoice</p>
+            </a>
+            <p id="rowNumInBill" style="padding:5px">Total rows in bill: </p>
+            <p id="rowLeftInBill" style="padding:5px">Total rows left: - </p>
+        </div>
+
+        <!-- the fooooooorrrmmmm -->
+        <form id="ClientBill" action = "" method = "POST" >
+            <h1>Billing FCR: </h1>
+            <div style="display:flex;gap:10px;margin:10px">
+                Invoice Number: <input id="billNumber" type="text" name="InvoiceNumInput" class="InvoiceNum" />
+                Bill Date: <input id="billDate" type="date" name="BillDateInput" class="BillDate" />
+                Client: <input id="Client" type="text" name="ClientNameInput" class="ClientName" />
+                Client Address: <input id="ClientAddress" type="text" name="ClientAddressInput" class="ClientAddress" />
+            </div>
+            <div>
+                <div class="jobLineDiv">
+                    <div id = "jobItemNum">Job Item 1:</div>
+                    <div id="workItemAndPriceLine" style = "display:inline-block">
+                        <div style = "display:inline-block;vertical-align:top;">
+                            Chasis Number: <input type="text" name="ChasisIdInput" class="ChasisId" />
+                        </div>
+                        <div style = "display:inline-block">
+                            <div class = "WorkItem" id = "WorkItemId">
+                                Work Item: <input type="text" name="WorkDesInput" class="WorkDescription" />
+                                Price: <input type="text" name="WorkPriceInput" class="WorkItemPrice" />
+                            </div>
+                            <div id = "WorkItemBtnDiv">
+                                <button type = "button" style = "margin:10px;" id = "addWorkItemBtn">Add Work Item</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id = "JobItemDiv">
+                    <button type = "button" style="margin:10px;" id="addJobItem">Add Job Item</button>
+                </div>
+            </div>
+
+            <button id="submitBtnID" style="padding:10px;margin:10px;background-color:#b096ff;">Save bill</button>
+
+        </form>
+
+        <!-- total price -->
+        <div style="display:flex;gap:10px;margin:10px">
+            <p>Total: </p>
+            <p id="total">0</p>
+        </div>
+
+        <!-- error div -->
+        <div id="errorDiv" style="color:red; margin:10px; display:flex;justify-content: center;">
+            <h1 id="errorText"></h1>
+        </div>
+
+        <!-- context menues -->
+        <div id="contextMenu1" style = "display:none; position:absolute; border: 1px solid #000000; padding: 5px; z-index: 1000; background-color: #ccc;">
+            <button id="RemoveWorkItem">Remove Work Item</button>
+        </div>
+        <div id="contextMenu2" style = "display:none; position:absolute; border: 1px solid #000000; padding: 5px; z-index: 1000; background-color: #ccc;">
+            <button id="RemoveJobItem">Remove Job Item</button>
+        </div>
+    </div>  
+</body>
+
+</html>
+
+
+
+<!-- 
+    I need to have a form where i can begin to input my data into a work item and eventually on a bill
+    Each bill must be compelted at once for now and cannot start or finish later
+    I need to be able to add work items and add jobitems
+ -->
