@@ -56,7 +56,7 @@ router.use("/",getdata);
 //     clientAddress: "d",
 //     jobItemsArr: [
 //         {
-//             chasisId:"d",
+//             equipmentId:"d",
 //             workItems:[
 //                 {workDescription:"d",workPrice:"100"},
 //                 {workDescription:"d",workPrice:"110"},

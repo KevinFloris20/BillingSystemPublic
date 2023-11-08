@@ -24,7 +24,7 @@ CREATE TABLE bills(
 CREATE TABLE jobs(
 	job_id INTEGER AUTO_INCREMENT NOT NULL,
     bill_id INTEGER,
-    chasis_number VARCHAR(255) NOT NULL,
+    equipment_number VARCHAR(255) NOT NULL,
     PRIMARY KEY(job_id),
     FOREIGN KEY (bill_id) REFERENCES bills(bill_id)
 );
@@ -34,7 +34,7 @@ CREATE TABLE work_items(
     job_id INTEGER,
     des VARCHAR(255) NOT NULL,
     note VARCHAR(255),
-    price INT NOT NULL,
+    price FLOAT NOT NULL,
     PRIMARY KEY(work_id),
     FOREIGN KEY (job_id) REFERENCES jobs(job_id)
 );

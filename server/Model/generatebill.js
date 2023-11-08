@@ -6,8 +6,8 @@ const fs = require('fs');
 
 //tHIS FUNCTION WILL READ THE PDF TEMPLATE, GET ITS FIELDS, ORDER THE FIELDS,
 //THEN POPULATE THE FIELDS WITH THE DATA GIVEN TO IT BECAUSE IT WILL GENERATE A BILL
-//billArr is an array of objects for each workItem in the bill. each work item will include chasis num
-//another array of work done and the number of times it was called on the chasis, price, and bill number,  
+//billArr is an array of objects for each workItem in the bill. each work item will include equipment num
+//another array of work done and the number of times it was called on the equipment, price, and bill number,  
 async function generate(billArr) {
     //open pdf doc, its bytes and the form, but first use a try/catch to see if the file exists
     let docBytes;

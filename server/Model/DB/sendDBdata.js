@@ -147,7 +147,7 @@ async function getCompletedBill(billObjIn){
     async function insertDBdata(input) {
         //these are the queries that will be used
         const billsSQL = 'INSERT INTO bills (bill_number, workDate, date, client_id) VALUES (?,?,?,?)';
-        const jobsSQL = 'INSERT INTO jobs (bill_id, chasis_number) VALUES (?,?)';
+        const jobsSQL = 'INSERT INTO jobs (bill_id, equipment_number) VALUES (?,?)';
         const workItemsSQL = 'INSERT INTO work_items (job_id, des, note, price) VALUES (?,?,?,?)';
         const notesSQL = 'INSERT INTO notes (work_id, note) VALUES (?,?)';
 
@@ -224,7 +224,7 @@ async function getCompletedBill(billObjIn){
             const promises = input.jobItemsArr.map(async (job) => {
                 //send query to db
                 const resID = new Promise((resolve,reject)=>{
-                    connection.query(jobsSQL, [resolvedBillID, job.chasisId],(err, res) => {
+                    connection.query(jobsSQL, [resolvedBillID, job.equipmentId],(err, res) => {
                             if (err) {
                                 console.log(err);
                                 reject(err);
@@ -242,7 +242,7 @@ async function getCompletedBill(billObjIn){
 
                 //update the billObject with the id
                 billObj.jobItemsArr.forEach(jobb => {
-                    if(jobb.chasisId == job.chasisId){
+                    if(jobb.equipmentId == job.equipmentId){
                         jobb.jobID = id;
                     }
                 });
@@ -372,7 +372,7 @@ var billObj = {
     clientAddress: "a",
     jobItemsArr:[
         {
-            chasisId:"a",
+            equipmentId:"a",
             workItems:
             [
                 {workDescription:"a$aa",workPrice:"85"},
@@ -382,7 +382,7 @@ var billObj = {
             jobNumber:1
         },
         {
-            chasisId:"a",
+            equipmentId:"a",
             workItems:
             [
                 {workDescription:"a",workPrice:"85"},
@@ -405,7 +405,7 @@ var billObj1 = {
     clientAddress: "b",
     jobItemsArr: [
         {
-            chasisId:"b",
+            equipmentId:"b",
             workItems:[
                 {workDescription:"b$beeee",workPrice:"90"},
                 {workDescription:"b",workPrice:"100"}
@@ -414,7 +414,7 @@ var billObj1 = {
             jobNumber:1
         },
         {
-            chasisId:"b",
+            equipmentId:"b",
             workItems:[
                 {workDescription:"b",workPrice:"90"},
                 {workDescription:"b",workPrice:"100"}
@@ -436,7 +436,7 @@ var billObj2 = {
     clientAddress: "c",
     jobItemsArr: [
         {
-            chasisId:"c",
+            equipmentId:"c",
             workItems:[
                 {workDescription:"c$ccc",workPrice:"95"},
                 {workDescription:"c",workPrice:"105"}
@@ -458,7 +458,7 @@ var billObj3 = {
     clientAddress: "d",
     jobItemsArr: [
         {
-            chasisId:"d",
+            equipmentId:"d",
             workItems:[
                 {workDescription:"d",workPrice:"100"},
                 {workDescription:"d",workPrice:"110"},
@@ -472,6 +472,20 @@ var billObj3 = {
 }
 
 module.exports = { getCompletedBill };
+
+//this is the test code
+// getCompletedBill(billObj).then((res)=>{
+//     console.log(res);
+// });
+// getCompletedBill(billObj1).then((res)=>{
+//     console.log(res);
+// });
+// getCompletedBill(billObj2).then((res)=>{
+//     console.log(res);
+// });
+// getCompletedBill(billObj3).then((res)=>{
+//     console.log(res);
+// });
 
 
 //for reference heh
@@ -488,7 +502,7 @@ var billObj = {
     client: "test client",
     clientId: 0,
     clientAddress: "100 test street 10314 test city",
-    jobItemsArr: [{chasisId:"AIMZ111222",workItems:[{workDescription:"This is the test Description$testNote",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:1},{chasisId:"AIMZ333222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:2}],
+    jobItemsArr: [{equipmentId:"AIMZ111222",workItems:[{workDescription:"This is the test Description$testNote",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:1},{equipmentId:"AIMZ333222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:2}],
     totalBillCost: 340
 }
 
@@ -502,7 +516,7 @@ var billObj1 = {
     clientAddress: "101 A street 10315 city A",
     jobItemsArr: [
         {
-            chasisId:"AIMZ112233",
+            equipmentId:"AIMZ112233",
             workItems:[
                 {workDescription:"Description A1",workPrice:"90"},
                 {workDescription:"Description A2",workPrice:"100"}
@@ -511,7 +525,7 @@ var billObj1 = {
             jobNumber:1
         },
         {
-            chasisId:"AIMZ444555",
+            equipmentId:"AIMZ444555",
             workItems:[
                 {workDescription:"Description A3",workPrice:"90"},
                 {workDescription:"Description A4",workPrice:"100"}
@@ -533,7 +547,7 @@ var billObj2 = {
     clientAddress: "102 B street 10316 city B",
     jobItemsArr: [
         {
-            chasisId:"AIMZ556677",
+            equipmentId:"AIMZ556677",
             workItems:[
                 {workDescription:"Description B1",workPrice:"95"},
                 {workDescription:"Description B2",workPrice:"105"}
@@ -555,7 +569,7 @@ var billObj3 = {
     clientAddress: "103 C street 10317 city C",
     jobItemsArr: [
         {
-            chasisId:"AIMZ788899",
+            equipmentId:"AIMZ788899",
             workItems:[
                 {workDescription:"Description C1",workPrice:"100"},
                 {workDescription:"Description C2",workPrice:"110"},

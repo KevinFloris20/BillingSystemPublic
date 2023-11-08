@@ -120,7 +120,7 @@ function editHTML(e,x){
                 <div class = "jobItemNum">Job Item `+jobLines+`:</div>
                 <div id="workItemAndPriceLine" style = "display:inline-block">
                     <div style = "display:inline-block;vertical-align:top;">
-                        Chasis Number: <input type="text" name="ChasisIdInput" class="ChasisId" />
+                        Equipment Number: <input type="text" name="EquipmentIdInput" class="EquipmentId" />
                     </div>
                     <div style = "display:inline-block">
                         <div class = "WorkItem" id = "WorkItemId">
@@ -135,8 +135,8 @@ function editHTML(e,x){
             </div>
             `);
 
-            //this selects the chasis id form field once its added (again user doesnt need to move to reach mouse and only relys on keyboard)
-            e.target.parentElement.previousElementSibling.querySelector(".ChasisId").focus();
+            //this selects the Equipment id form field once its added (again user doesnt need to move to reach mouse and only relys on keyboard)
+            e.target.parentElement.previousElementSibling.querySelector(".EquipmentId").focus();
 
             return;
         
@@ -299,7 +299,7 @@ window.addEventListener('DOMContentLoaded', () => {
         for (var i = 0; i < jobItemDivs.length; i++) {
             //This is an object for the characteristics of the job item
             var jobItemObj = {
-                chasisId: jobItemDivs[i].children[1].children[0].children[0].value,
+                equipmentId: jobItemDivs[i].children[1].children[0].children[0].value,
                 workItems: [],
                 totalJobCost: 0,
                 jobNumber: i+1
@@ -364,7 +364,7 @@ window.addEventListener('DOMContentLoaded', () => {
             billDate: "09/16/2023",
             client: "test client",
             clientAddress: "100 test street 10314 test city",
-            jobItemsArr: [{chasisId:"AIMZ111222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:1},{chasisId:"AIMZ333222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:2}],
+            jobItemsArr: [{equipmentId:"AIMZ111222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:1},{equipmentId:"AIMZ333222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:2}],
             totalBillCost: 340
         }
 
@@ -406,7 +406,7 @@ async function displayResults() {
     //         clientAddress: "d",
     //         jobItemsArr: [
     //             {
-    //                 chasisId:"d",
+    //                 equipmentId:"d",
     //                 workItems:[
     //                     {workDescription:"d",workPrice:"100"},
     //                     {workDescription:"d",workPrice:"110"},
@@ -428,7 +428,7 @@ async function displayResults() {
     //         clientAddress: "c",
     //         jobItemsArr: [
     //             {
-    //                 chasisId:"c",
+    //                 equipmentId:"c",
     //                 workItems:[
     //                     {workDescription:"c$ccc",workPrice:"95"},
     //                     {workDescription:"c",workPrice:"105"}

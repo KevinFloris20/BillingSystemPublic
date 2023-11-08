@@ -72,7 +72,7 @@ const TemplateBillObj = {//this is the bill object its just a template
     clientAddress: "",
     jobItemsArr: [
         // {
-        //     chasisId:"",
+        //     equipmentId:"",
         //     workItems:[
         //         // {workDescription:"",workPrice:""}
         //     ],
@@ -86,7 +86,7 @@ const TemplateBillObj = {//this is the bill object its just a template
 //template job object
 const TemplateJobObj = {
     jobId:null,
-    chasisId:"",
+    equipmentId:"",
     workItems:[
         // {workId:null,workDescription:"",workPrice:""}
     ],
@@ -239,8 +239,8 @@ async function getRecentBills(){
                 //set the job id
                 jobObj.jobId = listOfJobs[j].job_id;
 
-                //set the chasis id
-                jobObj.chasisId = listOfJobs[j].chasis_number;
+                //set the equipment id
+                jobObj.equipmentId = listOfJobs[j].equipment_number;
 
                 //set the job number
                 jobObj.jobNumber = billObj.jobItemsArr.length+1;
