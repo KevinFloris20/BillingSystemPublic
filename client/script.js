@@ -117,7 +117,7 @@ function editHTML(e,x){
             jobLines++;
             e.target.parentElement.insertAdjacentHTML('beforebegin', `
             <div class="jobLineDiv">
-                <div id = "jobItemNum">Job Item `+jobLines+`:</div>
+                <div class = "jobItemNum">Job Item `+jobLines+`:</div>
                 <div id="workItemAndPriceLine" style = "display:inline-block">
                     <div style = "display:inline-block;vertical-align:top;">
                         Chasis Number: <input type="text" name="ChasisIdInput" class="ChasisId" />
