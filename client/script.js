@@ -20,6 +20,199 @@ let jobLines = 1;
 let totalRowsInDom = 1;
 
 
+//submit the form data
+async function submitFormData(){
+    //get the divs that contain the job items and work items
+    var jobItemDivs = document.getElementsByClassName("jobLineDiv");
+    console.log(jobItemDivs);
+
+
+    //get the inputs per div
+    var jobItemInputs = [];
+    for (var i = 0; i < jobItemDivs.length; i++) {
+        //This is an object for the characteristics of the job item
+        var jobItemObj = {
+            equipmentId: jobItemDivs[i].children[1].children[0].children[0].value,
+            workItems: [],
+            totalJobCost: 0,
+            jobNumber: i+1
+        }
+
+        //put work item objects into the work items arr and into the job item object from the job item div
+        var workItemDivs = jobItemDivs[i].children[1].children[1].children;//this gets the div that has the work items
+        console.log(workItemDivs);
+        for (var x = 0; x < workItemDivs.length-1; x++) {
+            var workItemObj = {
+                workDescription: workItemDivs[x].children[0].value,
+                workPrice: workItemDivs[x].children[1].value
+            }
+            jobItemObj.workItems.push(workItemObj);
+            
+        }
+
+        //calculate the total cost of the job item and add it to the job item object
+        for (var x = 0; x < jobItemObj.workItems.length; x++) {
+            if (jobItemObj.workItems[x].workPrice.length != ""){
+                jobItemObj.totalJobCost += parseFloat(jobItemObj.workItems[x].workPrice);
+            }
+            
+        }
+
+        //add the job item object to the job item inputs array
+        jobItemInputs.push(jobItemObj);
+    }
+
+    
+    //turn the date into a string with dd/mm/yyy format
+    var thebilldate = document.getElementById("billDate").value;
+    thebilldate = thebilldate.split("-");
+    thebilldate = thebilldate[1] + "/" + thebilldate[2] + "/" + thebilldate[0];
+
+
+    //create the object that will be posted to the server
+    //this is at attr of the bill and then it will add the job items to jt
+    var billObj = {
+        billID: 0,
+        billNumber: document.getElementById("billNumber").value,
+        billDate: thebilldate,
+        client: document.getElementById("Client").value,
+        clientAddress: document.getElementById("ClientAddress").value,
+        jobItemsArr: jobItemInputs,
+        totalBillCost: 0
+    };
+
+
+    //calculate the total cost of the bill
+    for (var i = 0; i < billObj.jobItemsArr.length; i++) {
+        billObj.totalBillCost += billObj.jobItemsArr[i].totalJobCost;
+    }
+
+
+    //create a unique id for the bill
+    billObj.billID = billObj.billDate + billObj.client + 1;
+
+
+    //print the object
+    console.log(billObj);
+
+    var billTest = {
+        billID: 0,
+        billNumber: "09162023",
+        billDate: "09/16/2023",
+        client: "Tess",
+        clientAddress: "1234 Test St",
+        jobItemsArr: [{equipmentId:"AIMZ111222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:1},{equipmentId:"AIMZ333222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:2}],
+        totalBillCost: 340
+    }
+
+    //validate the form
+    try{
+        validateForm(billObj);
+    }
+    catch(e){
+        console.log(e);
+        
+        return;
+    }
+
+    //snd the object to the server
+    fetch('/form', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        // body: JSON.stringify(billObj)
+        body: JSON.stringify(billTest)//TESTING
+
+
+    })
+    .then((response) => {
+        console.log(response);
+        //if the response is ok then clear the form
+        if (response.ok){
+            cleanForm(original);
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+}
+
+
+
+//validate the form
+function validateForm(formObj){
+    //checks if the value is a non empty string
+    function isNonEmptyString(value) {
+        return typeof value === 'string' && value.trim() !== '';
+    }
+
+    //checks if the value is a positive number
+    function isPositiveNumber(value) {
+        const number = Number(value);
+        return Number.isFinite(number) && number > 0;
+    }
+
+    //check if bill number is Zero
+    if (formObj.billID !== 0) {
+        throw new Error('A new Bill ID must be Zero.');
+    }
+
+    //bill number must be a string 
+    if (typeof formObj.billNumber !== 'string') {
+        throw new Error('Bill number must be a string.');
+    }
+
+    //bill date must be in MM/DD/YYYY format
+    if (!/^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/.test(formObj.billDate)) {
+        throw new Error('Bill date must be in MM/DD/YYYY format.');
+    }
+
+    //client must be a non-empty string
+    if (!isNonEmptyString(formObj.client) || typeof formObj.client !== 'string') {
+        throw new Error('Client must be a non-empty string.');
+    }
+
+    //client address must be a string but if its empty thats ok
+    if (typeof formObj.clientAddress !== 'string') {
+        throw new Error('Client address must be a string.');
+    }
+
+    //job items must be an array
+    if (!Array.isArray(formObj.jobItemsArr)) {
+        throw new Error('Job items must be an array.');
+    }
+
+    //validate each job item
+    formObj.jobItemsArr.forEach((jobItem, index) => {
+        //validate equipmentId
+        if (typeof jobItem.equipmentId !== 'string') {
+            throw new Error(`Equipment ID for job item at index ${index} must be a string.`);
+        }
+        //validate workItems as an array and each work item's structure
+        if (!Array.isArray(jobItem.workItems)) {
+            throw new Error(`Work items for job item at index ${index} must be an array.`);
+        }
+        jobItem.workItems.forEach((work, workIndex) => {
+            //Validate workDescription as a non-empty string
+            if (!isNonEmptyString(work.workDescription)) {
+                throw new Error(`Work description for work item at index ${workIndex} in job item at index ${index} must be a non-empty string.`);
+            }
+            //validate workPrice as a positiv number
+            if (!isPositiveNumber(work.workPrice)) {
+                throw new Error(`Work price for work item at index ${workIndex} in job item at index ${index} must be a positive number.`);
+            }
+        });
+        //validate totalJobCost as a positive number
+        if (!isPositiveNumber(jobItem.totalJobCost)) {
+            throw new Error(`Total job cost for job item at index ${index} must be a positive number.`);
+        }
+        //validate jobNumber as anumber
+        if (typeof jobItem.jobNumber !== 'number') {
+            throw new Error(`Job number for job item at index ${index} must be a number.`);
+        }
+    });
+}
 
 
 //this function will return amount of total rows in the blank bill
@@ -282,113 +475,14 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    //this is the big boy code time
-    //this will be posting to the server when the form is submitted
-    //Now i dont have unqiue identifiers and im not going to be doing that for my input names
-    //on click of the submit i will manually get all the data from the form and orginize it and then submit it
-    //this will be a tiny bit complicated but i will try my best u got this kevin :3
+    //this is the event listener for the submit button which passes the event to the submit function
     document.getElementById('submitBtnID').addEventListener("click",(e) => {
         //prevent default form behavior
         e.preventDefault();
-        console.log("submitted");
-        //get the divs that contain the job items and work items
-        var jobItemDivs = document.getElementsByClassName("jobLineDiv");
-        console.log(jobItemDivs);
-        //get the inputs per div
-        var jobItemInputs = [];
-        for (var i = 0; i < jobItemDivs.length; i++) {
-            //This is an object for the characteristics of the job item
-            var jobItemObj = {
-                equipmentId: jobItemDivs[i].children[1].children[0].children[0].value,
-                workItems: [],
-                totalJobCost: 0,
-                jobNumber: i+1
-            }
+        console.log("submitting form");
 
-            //put work item objects into the work items arr and into the job item object from the job item div
-            var workItemDivs = jobItemDivs[i].children[1].children[1].children;//this gets the div that has the work items
-            console.log(workItemDivs);
-            for (var x = 0; x < workItemDivs.length-1; x++) {
-                var workItemObj = {
-                    workDescription: workItemDivs[x].children[0].value,
-                    workPrice: workItemDivs[x].children[1].value
-                }
-                jobItemObj.workItems.push(workItemObj);
-                
-            }
-
-            //calculate the total cost of the job item and add it to the job item object
-            for (var x = 0; x < jobItemObj.workItems.length; x++) {
-                if (jobItemObj.workItems[x].workPrice.length != ""){
-                    jobItemObj.totalJobCost += parseFloat(jobItemObj.workItems[x].workPrice);
-                }
-                
-            }
-
-            //add the job item object to the job item inputs array
-            jobItemInputs.push(jobItemObj);
-        }
-
-        
-        //turn the date into a string with dd/mm/yyy format
-        var thebilldate = document.getElementById("billDate").value;
-        thebilldate = thebilldate.split("-");
-        thebilldate = thebilldate[1] + "/" + thebilldate[2] + "/" + thebilldate[0];
-
-        //create the object that will be posted to the server
-        //this is at attr of the bill and then it will add the job items to jt
-        var billObj = {
-            billID: 0,
-            billNumber: document.getElementById("billNumber").value,
-            billDate: thebilldate,
-            client: document.getElementById("Client").value,
-            clientAddress: document.getElementById("ClientAddress").value,
-            jobItemsArr: jobItemInputs,
-            totalBillCost: 0
-        };
-
-        //calculate the total cost of the bill
-        for (var i = 0; i < billObj.jobItemsArr.length; i++) {
-            billObj.totalBillCost += billObj.jobItemsArr[i].totalJobCost;
-        }
-
-        //create a unique id for the bill
-        billObj.billID = billObj.billDate + billObj.client + 1;
-
-        //print the object
-        console.log(billObj);
-
-        var billTest = {
-            billID: 0,
-            billNumber: "09162023",
-            billDate: "09/16/2023",
-            client: "test clien",
-            clientAddress: "100 test street 10314 test city",
-            jobItemsArr: [{equipmentId:"AIMZ111222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:1},{equipmentId:"AIMZ333222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:2}],
-            totalBillCost: 340
-        }
-
-        //snd the object to the server
-        fetch('/form', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            // body: JSON.stringify(billObj)
-            body: JSON.stringify(billTest)//TESTING
-
-
-        })
-        .then((response) => {
-            console.log(response);
-            //if the response is ok then clear the form
-            if (response.ok){
-                cleanForm(original);
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+        //submit the form data
+        submitFormData();
     });
 }); 
 

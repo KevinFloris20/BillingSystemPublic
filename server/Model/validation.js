@@ -1,21 +1,21 @@
-// this will validate and return info regarding client form
-
-//rn this dont work
-
-//so ill just push everything to the db
-
 //require the db module
 const db = require('./DB/sendDBdata.js');
 
+//This file just valides the client form data and sends it to the Db
+//
+
+//checks if the value is a non empty string
 function isNonEmptyString(value) {
     return typeof value === 'string' && value.trim() !== '';
 }
 
+//checks if the value is a positive number
 function isPositiveNumber(value) {
     const number = Number(value);
     return Number.isFinite(number) && number > 0;
 }
 
+//this actually does the validation
 function validateBillObject(billObj) {
     //Validate billID and make sure it is 0
     if (billObj.billID !== 0) {
@@ -37,9 +37,9 @@ function validateBillObject(billObj) {
         throw new Error('Client must be a non-empty string.');
     }
 
-    //Validate clientAddress as a nonempty string
-    if (!isNonEmptyString(billObj.clientAddress)) {
-        throw new Error('Client address must be a non-empty string.');
+    //Validate clientAddress as a string
+    if (typeof billObj.clientAddress !== 'string') {
+        throw new Error('Client address must be a string.');
     }
 
     //Validate jobItemsArr as an array and each items structure
@@ -85,6 +85,7 @@ function validateBillObject(billObj) {
     return billObj;
 }
 
+//this will encapsulate the form data in a try catch block and then passes it to the validation func
 async function validateClientForm(dataObj) {
     const finaldataObj = await dataObj;
     if(finaldataObj == null){
@@ -92,12 +93,14 @@ async function validateClientForm(dataObj) {
         return;
     }
     try{
+        //if theres an err thrown then it will be caught and non of the code below will run
         const validatedBillObj = validateBillObject(finaldataObj);
-        db.getCompletedBill(validatedBillObj).then((res) => {
-            console.log(res, "hi");
-        });
+        console.log("Validation passed");
+
+        //send the validatedBillObj to the db
+        db.getCompletedBill(validatedBillObj);
     }catch(e){
-        console.log("dataObj has error");
+        console.log("Failed Validation client dataObj has an error");
         console.log(e.message);
         return;
     }
@@ -109,26 +112,3 @@ module.exports = {
     isNonEmptyString,
     isPositiveNumber
 };
-
-
-
-//outline from the interweb
-/*
-Data Sanitization: Clean the input to ensure that no malicious SQL is injected into the database. This could involve escaping special characters, stripping out unwanted scripts, and using prepared statements in your SQL queries.
-
-Data Type Checking: Confirm that each property of dataObj is of the expected type (e.g., strings for names and addresses, numbers for IDs and totals).
-
-Data Format Validation: If there are specific formats for data like phone numbers, dates, or emails, use regular expressions or existing validation libraries to check them.
-
-Required Fields: Ensure that all required fields are present and not empty.
-
-Range and Size Checks: If there are expected ranges or sizes for the data (e.g., a total bill cost should be a positive number), then check for these as well.
-
-Consistency Checks: If certain data depends on other data (e.g., a clientId must correspond to an existing client in the database), then these checks should be implemented.
-
-Error Handling: If validation fails, the function should return a meaningful error message or code indicating what went wrong.
-
-Testing: Implement unit tests to check various edge cases and ensure the validation logic is sound.
-
-Code Comments: Update the code comments to reflect the validation process and remove any comments that suggest bypassing validation.
-*/
