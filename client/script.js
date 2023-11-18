@@ -362,7 +362,7 @@ window.addEventListener('DOMContentLoaded', () => {
             billID: 0,
             billNumber: "09162023",
             billDate: "09/16/2023",
-            client: "test client",
+            client: "test clien",
             clientAddress: "100 test street 10314 test city",
             jobItemsArr: [{equipmentId:"AIMZ111222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:1},{equipmentId:"AIMZ333222",workItems:[{workDescription:"This is the test Description",workPrice:"85"},{workDescription:"This is the test Description2",workPrice:"85"}],totalJobCost:170,jobNumber:2}],
             totalBillCost: 340
@@ -374,8 +374,8 @@ window.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(billObj)
-            // body: JSON.stringify(billTest)//TESTING
+            // body: JSON.stringify(billObj)
+            body: JSON.stringify(billTest)//TESTING
 
 
         })
