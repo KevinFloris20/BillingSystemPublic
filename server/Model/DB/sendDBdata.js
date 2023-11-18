@@ -156,6 +156,7 @@ async function getCompletedBill(billObjIn){
         if (typeof clientID != "number"){
             Promise.all([clientID]);
             clientID = clientID.insertId;
+            billObj.clientId = clientID;
         }
 
         
@@ -360,7 +361,7 @@ async function getCompletedBill(billObjIn){
 }
 
 // module.exports = { getCompletedBill };
-
+module.exports = { getCompletedBill };
 
 var billObj = {
     billID: 0,
@@ -471,7 +472,7 @@ var billObj3 = {
     totalBillCost: 325
 }
 
-module.exports = { getCompletedBill };
+
 
 //this is the test code
 // getCompletedBill(billObj).then((res)=>{
